@@ -4,5 +4,4 @@ reportlab
 razorpay
 qrcode
 pillow
-pyzbar
-opencv-python
+

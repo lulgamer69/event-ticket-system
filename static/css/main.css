@@ -274,7 +274,11 @@ select:focus {
     gap: 15px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
     .container {
         border-radius: 10px;
     }
@@ -287,16 +291,192 @@ select:focus {
         font-size: 22px;
     }
     
+    .header p {
+        font-size: 12px;
+    }
+    
+    .logo {
+        width: 60px;
+        height: 60px;
+    }
+    
     .content {
-        padding: 25px 20px;
+        padding: 20px 15px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    label {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    select {
+        padding: 10px 12px;
+        font-size: 16px;
+    }
+    
+    .button {
+        padding: 12px 20px;
+        font-size: 14px;
+        border-radius: 6px;
     }
     
     .form-row {
         grid-template-columns: 1fr;
     }
     
+    .closed-container {
+        padding: 40px 20px;
+    }
+    
+    .closed-icon {
+        font-size: 60px;
+    }
+    
+    .closed-container h2 {
+        font-size: 22px;
+    }
+    
+    .closed-container p {
+        font-size: 14px;
+    }
+    
+    .qr-upload {
+        padding: 20px;
+        border-radius: 8px;
+    }
+    
+    .ticket-number {
+        font-size: 20px;
+    }
+    
+    #reader {
+        max-width: 100% !important;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 8px;
+    }
+    
+    .container {
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .header {
+        padding: 15px 10px;
+    }
+    
+    .header h1 {
+        font-size: 20px;
+    }
+    
+    .header p {
+        font-size: 11px;
+    }
+    
     .logo {
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
+        margin-bottom: 10px;
+    }
+    
+    .content {
+        padding: 15px 12px;
+    }
+    
+    .form-group {
+        margin-bottom: 12px;
+    }
+    
+    label {
+        font-size: 12px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    select {
+        padding: 10px 10px;
+        font-size: 16px;
+        border-radius: 6px;
+    }
+    
+    .button {
+        padding: 11px 16px;
+        font-size: 13px;
+        border-radius: 5px;
+    }
+    
+    .success-message,
+    .error-message {
+        padding: 12px;
+        font-size: 13px;
+        margin-bottom: 15px;
+    }
+    
+    .ticket-number {
+        font-size: 18px;
+        margin: 15px 0;
+    }
+    
+    .download-link {
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+    
+    h3 {
+        font-size: 16px !important;
+    }
+    
+    .qr-upload {
+        padding: 15px;
+    }
+    
+    .qr-label {
+        font-size: 13px;
+    }
+    
+    input[type="file"] {
+        font-size: 12px;
+    }
+    
+    div[style*="background: #f9f9f9"] {
+        padding: 15px !important;
+    }
+    
+    div[style*="background: #f0f8ff"] {
+        padding: 12px !important;
+        margin-bottom: 20px !important;
+    }
+    
+    p[style*="font-size: 32px"] {
+        font-size: 24px !important;
+    }
+    
+    #reader {
+        max-width: 100% !important;
+    }
+    
+    .closed-container {
+        padding: 30px 15px;
+    }
+    
+    .closed-icon {
+        font-size: 50px;
+    }
+    
+    small {
+        font-size: 11px !important;
     }
 }

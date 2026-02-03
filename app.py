@@ -1,25 +1,17 @@
 from flask import Flask, render_template, request, send_from_directory
 import sqlite3, os, random, string
 from datetime import date
-
-# PDF + QR
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 import qrcode
-
-# QR decode
-from pyzbar.pyzbar import decode
-from PIL import Image
-
-# Razorpay
 import razorpay
 from dotenv import load_dotenv
+from pathlib import Path
 
 app = Flask(__name__)
 app.secret_key = "secret"
 
-# Load .env file with explicit path
-from pathlib import Path
+# ================= ENV =================
 env_path = Path(__file__).parent / '.env'
 load_dotenv(dotenv_path=env_path)
 
@@ -64,16 +56,13 @@ def generate_ticket():
     return "EVT-2026-" + "".join(random.choices(string.digits, k=6))
 
 def generate_qr(ticket):
-    if not os.path.exists("qr"):
-        os.mkdir("qr")
+    os.makedirs("qr", exist_ok=True)
     path = f"qr/{ticket}.png"
     qrcode.make(ticket).save(path)
     return path
 
 def generate_ticket_pdf(ticket, child, p1, p2, total_people):
-    if not os.path.exists("tickets"):
-        os.mkdir("tickets")
-
+    os.makedirs("tickets", exist_ok=True)
     qr_path = generate_qr(ticket)
     pdf_path = f"tickets/{ticket}.pdf"
 
@@ -112,11 +101,6 @@ def generate_ticket_pdf(ticket, child, p1, p2, total_people):
 key_id = os.getenv("RAZORPAY_KEY_ID")
 key_secret = os.getenv("RAZORPAY_KEY_SECRET")
 
-if not key_id or not key_secret:
-    print("⚠️  WARNING: Razorpay credentials not found in .env file!")
-    print(f"KEY_ID loaded: {bool(key_id)}")
-    print(f"KEY_SECRET loaded: {bool(key_secret)}")
-
 razorpay_client = razorpay.Client(auth=(key_id, key_secret))
 
 # ================= DATE LOCK =================
@@ -127,7 +111,6 @@ REGISTRATION_END_DATE = date(2026, 2, 10)
 def home():
     return "App is live ✅"
 
-# ---------- REGISTER ----------
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if date.today() > REGISTRATION_END_DATE:
@@ -136,7 +119,6 @@ def register():
     if request.method == "POST":
         f = request.form
 
-        # Roll number anti-fraud
         conn = get_db()
         exists = conn.execute(
             "SELECT 1 FROM registrations WHERE child_roll=?",
@@ -163,14 +145,12 @@ def register():
 
     return render_template("register.html")
 
-# ---------- PAYMENT SUCCESS ----------
 @app.route("/payment-success", methods=["POST"])
 def payment_success():
     f = request.form
     amount = max(0, int(f["pass_count"]) - 1) * 100
     return complete_registration(f, amount, "PAID")
 
-# ---------- COMPLETE REGISTRATION ----------
 def complete_registration(f, amount, status):
     ticket = generate_ticket()
     total_people = 3 + (int(f["pass_count"]) - 1)
@@ -209,65 +189,19 @@ def complete_registration(f, amount, status):
     )
 
     return f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Registration Successful - Dumblebdor Kindergarten</title>
-        <link rel="stylesheet" href="/static/css/main.css">
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <img src="https://via.placeholder.com/80?text=DB" alt="Dumblebdor Logo" class="logo">
-                <h1>Registration Successful! 🎉</h1>
-                <p>Your entry pass is ready</p>
-            </div>
-            
-            <div class="content">
-                <div class="success-message">
-                    ✅ <strong>Registration Complete</strong>
-                </div>
-                
-                <div style="background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%); color: white; padding: 30px; border-radius: 10px; text-align: center; margin-bottom: 30px;">
-                    <p style="margin: 0; font-size: 14px; opacity: 0.9;">YOUR ENTRY PASS NUMBER</p>
-                    <p class="ticket-number" style="color: white; margin: 15px 0;">{ticket}</p>
-                </div>
-                
-                <a href="/{pdf}" target="_blank" class="download-link">📥 Download Ticket PDF</a>
-                
-                <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-top: 25px;">
-                    <h3 style="color: #2C3E50; margin-top: 0;">📋 Next Steps:</h3>
-                    <ul style="color: #666; line-height: 1.8; margin: 10px 0;">
-                        <li>✓ Download and save your ticket</li>
-                        <li>✓ Show this ticket at the event entrance</li>
-                        <li>✓ You can verify entry status at /verify</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </body>
-    </html>
+    <h2>Registration Successful ✅</h2>
+    <h1>{ticket}</h1>
+    <a href='/{pdf}' target='_blank'>Download Ticket</a>
     """
 
-# ---------- VERIFY ----------
+# ================= VERIFY =================
 @app.route("/verify", methods=["GET", "POST"])
 def verify():
     record = None
     error = None
 
     if request.method == "POST":
-        ticket = None
-
-        if "qr_image" in request.files and request.files["qr_image"].filename:
-            img = Image.open(request.files["qr_image"])
-            decoded = decode(img)
-            if decoded:
-                ticket = decoded[0].data.decode("utf-8")
-            else:
-                error = "❌ QR not detected – Entry denied"
-
-        elif "ticket_number" in request.form:
-            ticket = request.form["ticket_number"]
+        ticket = request.form.get("ticket_number")
 
         if ticket:
             record, status = get_record(ticket)
@@ -281,7 +215,6 @@ def verify():
 
     return render_template("verify.html", record=record, error=error)
 
-# ---------- ATTENDANCE CHECK ----------
 def get_record(ticket):
     conn = get_db()
     r = conn.execute(
@@ -309,16 +242,5 @@ def get_record(ticket):
 def download_ticket(filename):
     return send_from_directory("tickets", filename, as_attachment=True)
 
-# ---------- TEST ORDER (TEMP) ----------
-@app.route("/test-order")
-def test_order():
-    order = razorpay_client.order.create({
-        "amount": 100,
-        "currency": "INR",
-        "payment_capture": 1
-    })
-    return order
-
-# ================= RUN =================
 if __name__ == "__main__":
     app.run(debug=True)
