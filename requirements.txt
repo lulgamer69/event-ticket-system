@@ -4,4 +4,4 @@ reportlab
 razorpay
 qrcode
 pillow
-
+python-dotenv
