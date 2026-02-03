@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verify Ticket - Dumblebdor Kindergarten</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="/static/images/logo.png" alt="Dumblebdor Logo" class="logo">
+            <h1>Ticket Verification</h1>
+            <p>Check Entry Status</p>
+        </div>
+        
+        <div class="content">
+            {% if error %}
+            <div class="error-message">{{ error }}</div>
+            {% endif %}
+            
+            {% if record %}
+            <div class="success-message">
+                ✅ <strong>Ticket Valid - Entry Approved</strong>
+            </div>
+            
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <p style="margin: 10px 0;"><strong>Student:</strong> {{ record.child_name }}</p>
+                <p style="margin: 10px 0;"><strong>Entry Pass:</strong> {{ record.ticket_number }}</p>
+                <p style="margin: 10px 0;"><strong>Parents:</strong> {{ record.parent1_name }}{% if record.parent2_name %}, {{ record.parent2_name }}{% endif %}</p>
+                <p style="margin: 10px 0;"><strong>Allowed People:</strong> {{ record.total_people }}</p>
+                <p style="margin: 10px 0; color: #4CAF50; font-weight: bold;">✓ ENTRY GRANTED</p>
+            </div>
+            {% endif %}
+            
+            <div style="margin-bottom: 25px;">
+                <h3 style="color: #2C3E50; margin-bottom: 15px; text-align: center;">📱 Scan QR with Camera</h3>
+                <button type="button" id="startCameraBtn" class="button" style="margin-bottom: 15px;">📷 Start Camera Scan</button>
+                <div id="reader" style="width: 100%; display: none; border: 2px solid #FF6B35; border-radius: 8px;"></div>
+                <button type="button" id="stopCameraBtn" class="button button-secondary" style="display: none; margin-top: 15px;">⏹️ Stop Camera</button>
+            </div>
+            
+            <form method="POST" enctype="multipart/form-data">
+                <div style="margin-bottom: 25px;">
+                    <h3 style="color: #2C3E50; margin-bottom: 15px; text-align: center;">📸 Upload QR Image</h3>
+                    <div class="qr-upload">
+                        <input type="file" id="qr-file" name="qr_image" accept="image/*">
+                        <label for="qr-file" class="qr-label">📸 Click to Upload QR Image</label>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; color: #999; margin: 20px 0;">— OR —</div>
+                
+                <div class="form-group">
+                    <h3 style="color: #2C3E50; margin-bottom: 15px; text-align: center;">🔢 Manual Entry</h3>
+                    <input type="text" name="ticket_number" placeholder="Enter ticket number (EVT-2026-XXXXXX)" style="text-align: center;">
+                </div>
+                
+                <button type="submit" class="button">Verify Entry →</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        let html5QrcodeScanner = null;
+        
+        document.getElementById('startCameraBtn').addEventListener('click', function() {
+            document.getElementById('reader').style.display = 'block';
+            document.getElementById('startCameraBtn').style.display = 'none';
+            document.getElementById('stopCameraBtn').style.display = 'block';
+            
+            html5QrcodeScanner = new Html5Qrcode("reader");
+            Html5Qrcode.getCameras().then(cams => {
+                if (cams && cams.length > 0) {
+                    html5QrcodeScanner.start(
+                        cams[cams.length - 1].id,
+                        { fps: 10, qrbox: 250 },
+                        (txt) => {
+                            console.log("QR Code detected: ", txt);
+                            document.querySelector('input[name=ticket_number]').value = txt;
+                            html5QrcodeScanner.stop();
+                            document.querySelector('form').submit();
+                        }
+                    );
+                }
+            }).catch(err => {
+                alert("Camera not available: " + err);
+            });
+        });
+        
+        document.getElementById('stopCameraBtn').addEventListener('click', function() {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.stop();
+            }
+            document.getElementById('reader').style.display = 'none';
+            document.getElementById('startCameraBtn').style.display = 'block';
+            document.getElementById('stopCameraBtn').style.display = 'none';
+        });
+        
+        document.getElementById('qr-file').addEventListener('change', function() {
+            document.querySelector('form').submit();
+        });
+    </script>
+</body>
+</html>

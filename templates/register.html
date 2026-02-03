@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Event Registration - Dumblebdor Kindergarten</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="/static/images/logo.png" alt="Dumblebdor Logo" class="logo">
+            <h1>Annual Day Registration</h1>
+            <p>Dumblebdor Kindergarten</p>
+        </div>
+        
+        <div class="content">
+            <form method="POST">
+                <div class="form-group">
+                    <label for="child_roll">Child Roll Number</label>
+                    <input type="text" id="child_roll" name="child_roll" required placeholder="Enter roll number">
+                </div>
+                
+                <div class="form-group">
+                    <label for="child_name">Child Name</label>
+                    <input type="text" id="child_name" name="child_name" required placeholder="Enter child's full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="class_section">Class & Section</label>
+                    <input type="text" id="class_section" name="class_section" required placeholder="E.g., LKG-A">
+                </div>
+                
+                <div class="form-group">
+                    <label for="parent1_name">Parent 1 Name</label>
+                    <input type="text" id="parent1_name" name="parent1_name" required placeholder="Enter parent 1 name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="parent2_name">Parent 2 Name</label>
+                    <input type="text" id="parent2_name" name="parent2_name" placeholder="Enter parent 2 name (optional)">
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Contact Phone</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="Enter phone number">
+                </div>
+                
+                <div class="form-group">
+                    <label for="pass_count">Number of Passes</label>
+                    <select id="pass_count" name="pass_count" required>
+                        <option value="1">1 Pass (3 People - FREE)</option>
+                        <option value="2">2 Passes (4 People - ₹100)</option>
+                        <option value="3">3 Passes (5 People - ₹200)</option>
+                    </select>
+                    <small style="color: #666; display: block; margin-top: 5px;">💡 Each additional pass allows 1 extra family member</small>
+                </div>
+                
+                <button type="submit" class="button">Proceed to Payment →</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

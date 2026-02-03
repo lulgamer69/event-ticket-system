@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment - Dumblebdor Kindergarten</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="/static/images/logo.png" alt="Dumblebdor Logo" class="logo">
+            <h1>Secure Payment</h1>
+            <p>Complete Your Registration</p>
+        </div>
+        
+        <div class="content">
+            <div style="background: #f0f8ff; border-left: 4px solid #FF6B35; padding: 15px; border-radius: 5px; margin-bottom: 30px;">
+                <p style="color: #2C3E50; margin: 0;"><strong>Amount Due:</strong></p>
+                <p style="font-size: 32px; color: #FF6B35; margin: 10px 0 0 0; font-weight: bold;">₹{{ order.amount / 100 }}</p>
+            </div>
+            
+            <button id="rzp-button1" class="button">💳 Pay Now with Razorpay</button>
+            
+            <p style="text-align: center; color: #999; font-size: 12px; margin-top: 20px;">
+                🔒 Secure payment powered by Razorpay
+            </p>
+        </div>
+    </div>
+    
+    <form id="paymentForm" action="/payment-success" method="POST" style="display:none;">
+        {% for k,v in data.items() %}
+        <input type="hidden" name="{{k}}" value="{{v}}">
+        {% endfor %}
+    </form>
+    
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        document.getElementById('rzp-button1').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            var options = {
+                "key": "{{ key_id }}",
+                "amount": {{ order.amount }},
+                "currency": "INR",
+                "name": "Dumblebdor Kindergarten",
+                "description": "Annual Day Entry Pass",
+                "order_id": "{{ order.id }}",
+                "handler": function(response) {
+                    document.getElementById('paymentForm').submit();
+                },
+                "error": function(error) {
+                    alert("Payment failed: " + (error.description || "Unknown error"));
+                }
+            };
+            
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        });
+    </script>
+</body>
+</html>
