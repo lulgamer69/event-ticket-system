@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: event-registration
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11
+      - key: PORT
+        value: 5000
+    disks:
+      - name: ticket-storage
+        mountPath: /var/data/tickets
+        sizeGB: 1

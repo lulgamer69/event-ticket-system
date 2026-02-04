@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event Registration - Dumblebdor Kindergarten</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
@@ -26,17 +28,22 @@
                 
                 <div class="form-group">
                     <label for="class_section">Class & Section</label>
-                    <input type="text" id="class_section" name="class_section" required placeholder="E.g., LKG-A">
+                    <input type="text" id="class_section" name="class_section" required placeholder="E.g. - Playgroup, nursery, JrKg., SrKg.">
                 </div>
                 
                 <div class="form-group">
-                    <label for="parent1_name">Parent 1 Name</label>
-                    <input type="text" id="parent1_name" name="parent1_name" required placeholder="Enter parent 1 name">
+                    <label for="guest_name_1">Guest Name 1</label>
+                    <input type="text" id="guest_name_1" name="parent1_name" required placeholder="Enter guest 1 name">
                 </div>
                 
                 <div class="form-group">
-                    <label for="parent2_name">Parent 2 Name</label>
-                    <input type="text" id="parent2_name" name="parent2_name" placeholder="Enter parent 2 name (optional)">
+                    <label for="guest_name_2">Guest Name 2</label>
+                    <input type="text" id="guest_name_2" name="parent2_name" placeholder="Enter guest 2 name (optional)">
+                </div>
+                
+                <div class="form-group">
+                    <label for="guest_name_3">Guest Name 3</label>
+                    <input type="text" id="guest_name_3" name="guest_name_3" placeholder="Enter guest 3 name (optional)">
                 </div>
                 
                 <div class="form-group">
@@ -50,6 +57,11 @@
                         <option value="1">1 Pass (3 People - FREE)</option>
                         <option value="2">2 Passes (4 People - ₹100)</option>
                         <option value="3">3 Passes (5 People - ₹200)</option>
+                        <option value="4">4 Passes (6 People - ₹300)</option>
+                        <option value="5">5 Passes (7 People - ₹400)</option>
+                        <option value="6">6 Passes (8 People - ₹500)</option>
+                        <option value="7">7 Passes (9 People - ₹600)</option>
+                        <option value="8">8 Passes (10 People - ₹700)</option>
                     </select>
                     <small style="color: #666; display: block; margin-top: 5px;">💡 Each additional pass allows 1 extra family member</small>
                 </div>

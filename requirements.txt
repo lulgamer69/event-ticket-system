@@ -1,7 +1,8 @@
 Flask
 gunicorn
 reportlab
-razorpay
 qrcode
 pillow
 python-dotenv
+requests
+pywhatkit

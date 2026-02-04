@@ -1,60 +1,322 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Payment - Dumblebdor Kindergarten</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Instructions - Dumblebdor Kindergarten</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <style>
+        .payment-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .qr-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        .qr-container img {
+            max-width: 250px;
+            height: auto;
+        }
+        .screenshot-upload-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 40px 30px;
+            margin: 30px 0;
+            color: white;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        .screenshot-upload-section h3 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .screenshot-upload-section p {
+            margin: 5px 0 20px 0;
+            font-size: 14px;
+            opacity: 0.95;
+        }
+        .upload-box {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px dashed rgba(255, 255, 255, 0.6);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .upload-box:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: white;
+            transform: translateY(-2px);
+        }
+        .upload-box input[type="file"] {
+            display: none;
+        }
+        .upload-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        .upload-text {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .upload-hint {
+            font-size: 13px;
+            opacity: 0.85;
+        }
+        .file-name {
+            display: none;
+            margin-top: 10px;
+            font-size: 14px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .file-name.show {
+            display: block;
+        }
+        .payment-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: all 0.3s;
+            display: none;
+        }
+        .payment-button:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+        .payment-button.visible {
+            display: inline-block;
+            animation: slideDown 0.4s ease-out;
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .status-message {
+            display: none;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        .status-message.pending {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            display: block;
+        }
+        .status-message.scanned {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #FF6B35;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .steps {
+            text-align: left;
+            margin: 30px 0;
+        }
+        .steps p {
+            margin: 15px 0;
+            font-size: 16px;
+        }
+        #reader {
+            display: none;
+            margin: 20px auto;
+            max-width: 400px;
+        }
+        .camera-toggle {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .camera-toggle:hover {
+            background: #0056b3;
+        }
+        .scan-status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            display: none;
+            text-align: center;
+            font-weight: 600;
+        }
+        .scan-status.checking {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            display: block;
+        }
+        .scan-status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <img src="/static/images/logo.png" alt="Dumblebdor Logo" class="logo">
-            <h1>Secure Payment</h1>
-            <p>Complete Your Registration</p>
+
+<div class="container">
+    <div class="header">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" class="logo">
+        <h1>Payment Instructions</h1>
+        <p>Annual Day Entry Pass</p>
+    </div>
+
+    <div class="content">
+
+        <div class="steps">
+            <p><span class="step-number">1</span> <strong>Scan the QR Code Below</strong> with your phone</p>
+            <p><span class="step-number">2</span> <strong>Complete Payment</strong> of ₹{{ amount }}</p>
+            <p><span class="step-number">3</span> <strong>Click "Payment Done"</strong> button after paying</p>
         </div>
-        
-        <div class="content">
-            <div style="background: #f0f8ff; border-left: 4px solid #FF6B35; padding: 15px; border-radius: 5px; margin-bottom: 30px;">
-                <p style="color: #2C3E50; margin: 0;"><strong>Amount Due:</strong></p>
-                <p style="font-size: 32px; color: #FF6B35; margin: 10px 0 0 0; font-weight: bold;">₹{{ order.amount / 100 }}</p>
+
+        <div class="payment-section">
+            <div class="qr-container">
+                <img src="{{ url_for('generate_upi_qr', ticket=ticket, amount=amount) }}" alt="Payment QR Code">
             </div>
             
-            <button id="rzp-button1" class="button">💳 Pay Now with Razorpay</button>
-            
-            <p style="text-align: center; color: #999; font-size: 12px; margin-top: 20px;">
-                🔒 Secure payment powered by Razorpay
-            </p>
+            <p style="margin-top:20px;"><strong>Or pay directly to:</strong></p>
+            <p style="font-size: 18px; font-weight: bold;">prapti250305@okicici</p>
         </div>
+
+        <form method="POST" action="{{ url_for('payment_confirm') }}" enctype="multipart/form-data" style="text-align: center;">
+            <input type="hidden" name="ticket_number" value="{{ ticket }}">
+            <input type="hidden" name="phone" value="{{ phone }}">
+            
+            <div class="screenshot-upload-section">
+                <h3>📸 Payment Proof Screenshot</h3>
+                <p>Upload your payment confirmation screenshot for instant verification</p>
+                
+                <div class="upload-box" onclick="document.getElementById('fileInput').click();">
+                    <div class="upload-icon">📷</div>
+                    <div class="upload-text">Click to upload or drag & drop</div>
+                    <div class="upload-hint">PNG, JPG, GIF up to 5MB</div>
+                    <input type="file" id="fileInput" name="payment_screenshot" accept="image/*" required onchange="handleFileSelect(this)">
+                    <div class="file-name" id="fileName"></div>
+                </div>
+            </div>
+            
+            <button type="submit" class="payment-button" id="paymentBtn" disabled>✅ Payment Done</button>
+        </form>
+
+        <div id="statusMessage" class="status-message pending">
+            <strong>⏳ Processing Payment Verification</strong><br>
+            <span style="font-size: 14px;">The admin will verify your payment and send the ticket download link to your WhatsApp.<br>
+            <strong>WhatsApp Message will be sent to:</strong> {{ phone }}</span>
+        </div>
+
+        <div class="info-box">
+            ✅ After payment verification, <strong>your ticket download link will be sent to your WhatsApp number</strong>.
+        </div>
+
+        <div class="info-box" style="background:#fff6e5;border-left:4px solid #ffa500;">
+            ⚠️ Please do not come to the event without receiving the official ticket.
+        </div>
+
+        <p style="text-align:center;font-size:13px;color:#999;margin-top:20px;">
+            For payment issues, contact admin on WhatsApp: 8591367049
+        </p>
+
     </div>
+</div>
+
+<script>
+// Button appears after 10 seconds
+document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('paymentBtn');
+    setTimeout(() => {
+        btn.classList.add('visible');
+        btn.disabled = false;
+    }, 10000);
+});
+
+function handleFileSelect(input) {
+    const file = input.files[0];
+    const fileNameDiv = document.getElementById('fileName');
     
-    <form id="paymentForm" action="/payment-success" method="POST" style="display:none;">
-        {% for k,v in data.items() %}
-        <input type="hidden" name="{{k}}" value="{{v}}">
-        {% endfor %}
-    </form>
+    if (file) {
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        
+        if (file.size > maxSize) {
+            alert('File size exceeds 5MB limit');
+            input.value = '';
+            fileNameDiv.classList.remove('show');
+            return;
+        }
+        
+        fileNameDiv.textContent = '✅ ' + file.name + ' selected';
+        fileNameDiv.classList.add('show');
+    }
+}
+
+// Drag and drop functionality
+const uploadBox = document.querySelector('.upload-box');
+if (uploadBox) {
+    uploadBox.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadBox.style.background = 'rgba(255, 255, 255, 0.3)';
+    });
     
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script>
-        document.getElementById('rzp-button1').addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            var options = {
-                "key": "{{ key_id }}",
-                "amount": {{ order.amount }},
-                "currency": "INR",
-                "name": "Dumblebdor Kindergarten",
-                "description": "Annual Day Entry Pass",
-                "order_id": "{{ order.id }}",
-                "handler": function(response) {
-                    document.getElementById('paymentForm').submit();
-                },
-                "error": function(error) {
-                    alert("Payment failed: " + (error.description || "Unknown error"));
-                }
-            };
-            
-            var rzp1 = new Razorpay(options);
-            rzp1.open();
-        });
-    </script>
-</body>
-</html>
+    uploadBox.addEventListener('dragleave', () => {
+        uploadBox.style.background = 'rgba(255, 255, 255, 0.15)';
+    });
+    
+    uploadBox.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadBox.style.background = 'rgba(255, 255, 255, 0.15)';
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            document.getElementById('fileInput').files = files;
+            handleFileSelect(document.getElementById('fileInput'));
+        }
+    });
+}
+</script>
+
+

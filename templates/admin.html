@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel - Payment Verification</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <style>
+        .admin-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .payment-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .payment-item.pending {
+            border-left: 4px solid #ffa500;
+        }
+        .payment-item.verified {
+            border-left: 4px solid #28a745;
+            background: #f0f9f6;
+        }
+        .payment-info {
+            flex: 1;
+        }
+        .payment-info h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .payment-info p {
+            margin: 5px 0;
+            color: #666;
+            font-size: 14px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .status-badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-badge.verified {
+            background: #d4edda;
+            color: #155724;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .btn-verify {
+            background: #28a745;
+            color: white;
+        }
+        .btn-verify:hover {
+            background: #218838;
+        }
+        .btn-cancel {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-cancel:hover {
+            background: #c82333;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .filter-section {
+            margin-bottom: 20px;
+        }
+        .filter-section button {
+            margin-right: 10px;
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .filter-section button.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.3s;
+        }
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 0;
+            border-radius: 15px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: slideUp 0.3s;
+        }
+        .modal-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 15px 15px 0 0;
+        }
+        .modal-header h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .close-btn:hover {
+            transform: scale(1.2);
+        }
+        .modal-body {
+            padding: 20px;
+            text-align: center;
+        }
+        .modal-body img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .view-btn {
+            background: #ff9800;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .view-btn:hover {
+            background: #e68900;
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <div class="header" style="text-align: center; margin-bottom: 30px;">
+        <h1>🔒 Admin Payment Verification Panel</h1>
+        <p>Verify payments and send tickets to parents</p>
+    </div>
+
+    <div class="filter-section">
+        <label><strong>Filter:</strong></label>
+        <button class="active" onclick="filterPayments('all')">All</button>
+        <button onclick="filterPayments('pending')">Pending</button>
+        <button onclick="filterPayments('verified')">Verified</button>
+    </div>
+
+    <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <h3 style="color: #2e7d32; margin-top: 0;">📱 Pending WhatsApp Messages</h3>
+        <div style="background: white; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 12px; max-height: 300px; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word;">
+            {% if pending_messages %}
+                {{ pending_messages }}
+            {% else %}
+                <p style="color: #666;">No pending messages</p>
+            {% endif %}
+        </div>
+        <button onclick="clearMessages()" style="margin-top: 10px; padding: 8px 16px; background: #ff9800; color: white; border: none; border-radius: 5px; cursor: pointer;">Clear Messages</button>
+    </div>
+
+    <div id="paymentsContainer">
+        {% if not payments %}
+        <div class="card" style="text-align: center;">
+            <p style="color: #999;">No pending payments</p>
+        </div>
+        {% endif %}
+
+        {% for payment in payments %}
+        <div class="payment-item payment-{{ payment.payment_status|lower }}" id="payment-{{ payment.id }}">
+            <div class="payment-info">
+                <h3>{{ payment.child_name }} - ₹{{ payment.amount_paid }}</h3>
+                <p><strong>Parent:</strong> {{ payment.parent1_name }}</p>
+                <p><strong>Phone:</strong> +91 {{ payment.phone }}</p>
+                <p><strong>Ticket:</strong> {{ payment.ticket_number }}</p>
+                <p><strong>Roll:</strong> {{ payment.child_roll }} | <strong>Class:</strong> {{ payment.class_section }}</p>
+                <span class="status-badge {{ payment.payment_status|lower }}">{{ payment.payment_status }}</span>
+                {% if payment.payment_status == 'AWAITING_VERIFICATION' %}
+                <p style="margin-top: 10px;">
+                    <a href="/preview-ticket/{{ payment.ticket_number }}" style="color: #007bff; text-decoration: none;">📄 View Ticket PDF</a>
+                    {% if payment.payment_screenshot %}
+                    <button class="view-btn" onclick="viewScreenshot('/view-screenshot/{{ payment.ticket_number }}')">📸 View Screenshot</button>
+                    {% endif %}
+                </p>
+                {% endif %}
+            </div>
+            <div class="action-buttons">
+                {% if payment.payment_status == 'AWAITING_VERIFICATION' %}
+                <button class="btn btn-verify" onclick="verifyPayment('{{ payment.id }}', '{{ payment.phone }}', '{{ payment.ticket_number }}')">
+                    ✅ Verify & Send Ticket
+                </button>
+                {% elif payment.payment_status == 'VERIFIED' %}
+                <button class="btn btn-cancel" onclick="cancelVerification('{{ payment.id }}')" style="background: #6c757d;">
+                    Verified ✓
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script>
+function filterPayments(status) {
+    const items = document.querySelectorAll('.payment-item');
+    items.forEach(item => {
+        if (status === 'all' || item.className.includes('payment-' + status)) {
+            item.style.display = 'flex';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+    
+    // Update active button
+    document.querySelectorAll('.filter-section button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+}
+
+function verifyPayment(paymentId, phone, ticket) {
+    if (confirm('Verify payment and send ticket?')) {
+        fetch('/admin/verify-payment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                payment_id: paymentId,
+                phone: phone,
+                ticket: ticket
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('✅ Ticket sent to parent WhatsApp!');
+                document.getElementById('payment-' + paymentId).style.opacity = '0.5';
+                document.getElementById('payment-' + paymentId).querySelector('.btn-verify').disabled = true;
+            } else {
+                alert('❌ Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            alert('Error sending request: ' + error);
+        });
+    }
+}
+
+function cancelVerification(paymentId) {
+    alert('Payment already verified');
+}
+
+function clearMessages() {
+    if (confirm('Clear all pending messages?')) {
+        fetch('/admin/clear-messages', { method: 'POST' })
+            .then(() => {
+                location.reload();
+            });
+    }
+}
+
+// Screenshot Modal Functions
+function viewScreenshot(screenshotUrl) {
+    const modal = document.getElementById('screenshotModal');
+    const img = document.getElementById('screenshotImg');
+    img.src = screenshotUrl;
+    modal.classList.add('show');
+}
+
+function closeScreenshot() {
+    const modal = document.getElementById('screenshotModal');
+    modal.classList.remove('show');
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('screenshotModal');
+    if (event.target === modal) {
+        modal.classList.remove('show');
+    }
+}
+</script>
+
+<!-- Screenshot Modal -->
+<div id="screenshotModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Payment Screenshot</h2>
+            <button class="close-btn" onclick="closeScreenshot()">×</button>
+        </div>
+        <div class="modal-body">
+            <img id="screenshotImg" src="" alt="Payment Screenshot">
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

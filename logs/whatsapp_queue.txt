@@ -1,0 +1,213 @@
+
+[2026-02-04 22:55:15]
+TO: +918591367049
+✅ *Payment Verified!*
+
+Ticket Number: EVT-2026-213765
+Child: je
+
+Your annual day entry pass is confirmed!
+
+📱 Show this ticket at the entrance on event day.
+👥 Allowed people: 4
+
+See you at the Annual Day! 🎉
+
+📥 *Download Ticket:*
+http://192.168.1.9:5000/tickets/EVT-2026-213765.pdf
+============================================================
+
+[2026-02-04 22:56:18]
+TO: +918591367049
+
+🔔 *New Payment Notification* 🔔
+
+Ticket: EVT-2026-829667
+Child: je
+Parent: e
+Phone: 8591367049
+Amount: ₹100
+
+Parent claims to have paid. Please verify payment and send the ticket.
+
+============================================================
+
+[2026-02-04 23:04:49]
+TO: +918591367049
+
+🔔 *New Payment Notification* 🔔
+
+Ticket: EVT-2026-315382
+Child: lallu
+Parent: kes
+Phone: 8591367049
+Amount: ₹100
+
+Parent claims to have paid. Please verify payment and send the ticket.
+
+============================================================
+
+[2026-02-04 23:09:17]
+TO: +918591367049
+
+🔔 *New Payment Notification* 🔔
+
+Ticket: EVT-2026-543544
+Child: lallu
+Parent: kes
+Phone: 8591367049
+Amount: ₹100
+
+Parent claims to have paid. Please verify payment and send the ticket.
+
+============================================================
+
+[2026-02-04 23:12:47]
+TO: +918591367049
+
+🔔 *New Payment Notification* 🔔
+
+Ticket: EVT-2026-086622
+Child: lal
+Parent: kes
+Phone: 8591367049
+Amount: ₹100
+
+Parent claims to have paid. Please verify payment and send the ticket.
+
+============================================================
+
+[2026-02-04 23:32:08]
+TO: +918591367049
+
+🔔 *New Payment Notification* 🔔
+
+Ticket: EVT-2026-232362
+Child: lal
+Parent: kess
+Phone: 8591367049
+Amount: ₹100
+
+Parent claims to have paid. Please verify payment and send the ticket.
+
+============================================================
+
+[2026-02-05 00:10:15]
+TO: +918591367049
+
+🔔 *New Payment Notification* 🔔
+
+Ticket: EVT-2026-589471
+Child: krishna
+Parent: lalu
+Phone: +919137260645
+Amount: ₹100
+
+Parent claims to have paid. Please verify payment and send the ticket.
+
+============================================================
+
+[2026-02-05 00:34:27]
+TO: +918591367049
+
+🔔 *New Payment Notification* 🔔
+
+Ticket: EVT-2026-102526
+Child: krishna
+Parent: lalu
+Phone: +919137260645
+Amount: ₹100
+
+Parent claims to have paid. Please verify payment and send the ticket.
+
+============================================================
+
+[2026-02-05 00:37:18]
+TO: +918591367049
+
+🔔 *New Payment Notification* 🔔
+
+Ticket: EVT-2026-793298
+Child: krishna
+Parent: lalu
+Phone: +919137260645
+Amount: ₹100
+
+Parent claims to have paid. Please verify payment and send the ticket.
+
+============================================================
+
+[2026-02-05 00:48:39]
+TO: +918591367049
+
+🔔 *New Payment Notification* 🔔
+
+Ticket: EVT-2026-285585
+Child: krishna
+Parent: lalu
+Phone: +919137260645
+Amount: ₹100
+
+Parent claims to have paid. Please verify payment and send the ticket.
+
+============================================================
+
+[2026-02-05 00:51:46]
+TO: +918591367049
+
+🔔 *New Payment Notification* 🔔
+
+Ticket: EVT-2026-194827
+Child: krishna
+Parent: lalu
+Phone: +919137260645
+Amount: ₹200
+
+Parent claims to have paid. Please verify payment and send the ticket.
+
+============================================================
+
+[2026-02-05 00:53:51]
+TO: +918591367049
+
+🔔 *New Payment Notification* 🔔
+
+Ticket: EVT-2026-638438
+Child: krishna
+Parent: lalu
+Phone: +919137260645
+Amount: ₹200
+
+Parent claims to have paid. Please verify payment and send the ticket.
+
+============================================================
+
+[2026-02-05 01:51:00]
+TO: +918591367049
+
+🔔 *New Payment Notification* 🔔
+
+Ticket: EVT-2026-938320
+Child: krishna
+Parent: lalu
+Phone: +919137260645
+Amount: ₹200
+
+Parent claims to have paid. Please verify payment and send the ticket.
+
+============================================================
+
+[2026-02-05 01:53:55]
+TO: +918591367049
+
+🔔 *New Payment Notification* 🔔
+
+Ticket: EVT-2026-367535
+Child: krishna
+Parent: lalu
+Phone: +919137260645
+Amount: ₹200
+
+Parent claims to have paid. Please verify payment and send the ticket.
+
+============================================================
